@@ -20,7 +20,7 @@ export class Injector {
 
     return {
       id,
-      __type__: id as unknown as T
+      __type__: id as unknown as T,
     };
   }
 }

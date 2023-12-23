@@ -1,17 +1,17 @@
-import esbuildPluginTsc from 'esbuild-plugin-tsc';
+import esbuildPluginTsc from "esbuild-plugin-tsc";
 
 export function createBuildSettings(options) {
   return {
-    entryPoints: ['src/index.ts'],
-    outfile: 'dist/index.js',
+    entryPoints: ["src/index.ts"],
+    outfile: "dist/index.js",
     bundle: true,
-    platform: 'node',
+    platform: "node",
     plugins: [
       esbuildPluginTsc({
         force: true,
-        tsconfigPath: './tsconfig.json',
+        tsconfigPath: "./tsconfig.json",
       }),
     ],
-    ...options
+    ...options,
   };
 }

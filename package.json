@@ -10,7 +10,8 @@
     "start:dev": "nodemon ./dist/index.js",
     "start:db": "docker-compose up dynamodb-local",
     "test:coverage": "jest --coverage",
-    "test": "jest"
+    "test": "jest",
+    "format": "prettier --write ."
   },
   "author": "",
   "license": "ISC",

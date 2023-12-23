@@ -3,12 +3,6 @@
   "transform": {
     "^.+\\.ts$": "ts-jest"
   },
-  "moduleDirectories": [
-    "node_modules",
-    "src"
-  ],
-  "collectCoverageFrom": [
-    "src/**/*.ts",
-    "!<rootDir>/node_modules/"
-  ]
+  "moduleDirectories": ["node_modules", "src"],
+  "collectCoverageFrom": ["src/**/*.ts", "!<rootDir>/node_modules/"]
 }
