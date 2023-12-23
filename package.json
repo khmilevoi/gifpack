@@ -11,7 +11,8 @@
     "start:db": "docker-compose up dynamodb-local",
     "test:coverage": "jest --coverage",
     "test": "jest",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "precommit": "npm run format && git add ."
   },
   "author": "",
   "license": "ISC",
