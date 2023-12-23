@@ -1,5 +1,5 @@
-import { Injector } from "../../injector.js";
-import { IImage } from "../../domain/state.interface.js";
+import { Injector } from "../../injector";
+import { IImage } from "../../domain/state.interface";
 
 export interface IMoveToImageStageUseCase {
   moveToImageStage(stateId: string, images: IImage[]): Promise<void>;

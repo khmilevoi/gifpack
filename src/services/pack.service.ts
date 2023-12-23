@@ -1,12 +1,12 @@
-import { IUser } from "domain/user.interface.js";
-import { IRepository } from "layers/repository.interface.js";
-import { IPack } from "domain/pack.interface.js";
-import { IPackItem } from "domain/pack-item.interface.js";
-import { ILoadPacksUseCase } from "../use-cases/packs/load-packs.use-case.js";
-import { IFindPublicPacksByNameUseCase } from "../use-cases/packs/find-public-packs-by-name-use.case.js";
-import { Injector } from "../injector.js";
-import { injector } from "../index.js";
-import { PackRepository } from "../repositories/pack.repository.js";
+import { IUser } from "domain/user.interface";
+import { IRepository } from "layers/repository.interface";
+import { IPack } from "domain/pack.interface";
+import { IPackItem } from "domain/pack-item.interface";
+import { ILoadPacksUseCase } from "../use-cases/packs/load-packs.use-case";
+import { IFindPublicPacksByNameUseCase } from "../use-cases/packs/find-public-packs-by-name-use.case";
+import { Injector } from "../injector";
+import { injector } from "../index";
+import { PackRepository } from "../repositories/pack.repository";
 
 export class PackService
   implements ILoadPacksUseCase, IFindPublicPacksByNameUseCase

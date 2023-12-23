@@ -1,0 +1,9 @@
+{
+  "transform": {
+    "^.+\\.ts$": "jest-esbuild"
+  },
+  "moduleDirectories": [
+    "node_modules",
+    "src"
+  ]
+}

@@ -1,13 +1,8 @@
 {
   "compilerOptions": {
-    "target": "ESNext",
-    "strict": true,
-    "alwaysStrict": true,
-    "baseUrl": "./src",
+
     "allowSyntheticDefaultImports": true,
-    "strictNullChecks": true,
-    "moduleResolution": "nodenext",
-    "allowImportingTsExtensions": false,
-    "types": ["node", "vitest/globals"]
+    "baseUrl": "./src",
+    "types": ["node", "jest"],
   }
 }

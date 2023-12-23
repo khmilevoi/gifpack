@@ -1,4 +1,4 @@
-import { IAnswer } from "../layers/answer.interface.js";
+import { IAnswer } from "../layers/answer.interface";
 import { InlineQueryResult } from "node-telegram-bot-api";
 
 export const mapAnswer = (

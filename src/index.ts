@@ -1,13 +1,11 @@
-import TelegramBot, { InlineQueryResult } from "node-telegram-bot-api";
-import "dotenv/config";
-import * as process from "process";
-import { Injector } from "./injector.js";
-import { FindPublicPacksByNameUseCase } from "./use-cases/packs/find-public-packs-by-name-use.case.js";
-import { LoadPacksUseCase } from "./use-cases/packs/load-packs.use-case.js";
-import { LoadPackItemsFromPackUseCase } from "./use-cases/packs/load-pack-items-from-pack.use-case.js";
-import { createDependencies } from "./dependencies.js";
-import { UsingController } from "./controllers/using.controller.js";
-import { mapAnswer } from "./mappers/answer.mapper.js";
+import TelegramBot from "node-telegram-bot-api";
+import dotenv from "dotenv";
+import { Injector } from "./injector";
+import { createDependencies } from "./dependencies";
+import { UsingController } from "./controllers/using.controller";
+import { mapAnswer } from "./mappers/answer.mapper";
+
+dotenv.config();
 
 const config = {
   token: process.env.TOKEN,

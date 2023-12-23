@@ -1,5 +1,5 @@
-import { Injector } from "../injector.js";
-import { IRepository } from "../layers/repository.interface.js";
-import { IPack } from "../domain/pack.interface.js";
+import { Injector } from "../injector";
+import { IRepository } from "../layers/repository.interface";
+import { IPack } from "../domain/pack.interface";
 
 export const PackRepository = Injector.create<IRepository<IPack>>();
