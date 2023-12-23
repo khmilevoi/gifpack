@@ -1,8 +1,6 @@
 import { Injector } from "../injector.js";
 import { IAnswer } from "../layers/answer.interface.js";
 import { FindPublicPacksByNameUseCase } from "../use-cases/packs/find-public-packs-by-name-use.case.js";
-import { LoadPacksUseCase } from "../use-cases/packs/load-packs.use-case.js";
-import { injector } from "../index.js";
 import { LoadPackItemsFromPackUseCase } from "../use-cases/packs/load-pack-items-from-pack.use-case.js";
 import { FindPacksByUserIdUseCase } from "../use-cases/packs/find-packs-by-user-id.use-case.js";
 
@@ -41,7 +39,7 @@ export class UsingController {
     if (publicPacks.length === 1) {
       const [currentPack] = publicPacks;
 
-      const packItems = await injector
+      const packItems = await this.injector
         .resolve(LoadPackItemsFromPackUseCase)
         .loadPackItemsFromPack(currentPack.id);
 
