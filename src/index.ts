@@ -1,7 +1,7 @@
 import TelegramBot from "node-telegram-bot-api";
 import dotenv from "dotenv";
 import { Injector } from "./injector";
-import { createDependencies } from "./dependencies";
+import { injectDependencies } from "./dependencies";
 import { UsingController } from "./controllers/using.controller";
 import { mapAnswer } from "./mappers/answer.mapper";
 
@@ -19,7 +19,7 @@ export const injector = new Injector();
 
 const bot = new TelegramBot(config.token, { polling: true });
 
-createDependencies(injector);
+injectDependencies(injector);
 
 const usingController = new UsingController(injector);
 
@@ -37,17 +37,19 @@ bot.on("inline_query", async (query) => {
   await bot.answerInlineQuery(query.id, inlineMessages, { cache_time: 0 });
 });
 
-bot.setMyCommands([
-  {
-    command: "add",
-    description: "Add new Pack Item",
-  },
-  {
-    command: "cancel",
-    description: "Cancel current operation",
-  },
-]);
-
-bot.on("message", async (message, metadata) => {});
+bot
+  .setMyCommands([
+    {
+      command: "add",
+      description: "Add new Pack Item",
+    },
+    {
+      command: "cancel",
+      description: "Cancel current operation",
+    },
+  ])
+  .then(() => {
+    bot.on("message", async (message, metadata) => {});
+  });
 
 console.log("Bot is running...");

@@ -1,8 +1,8 @@
-import { Injector } from "../injector";
-import { IAnswer } from "../layers/answer.interface";
-import { FindPublicPacksByNameUseCase } from "../use-cases/packs/find-public-packs-by-name-use.case";
-import { LoadPackItemsFromPackUseCase } from "../use-cases/packs/load-pack-items-from-pack.use-case";
-import { FindPacksByUserIdUseCase } from "../use-cases/packs/find-packs-by-user-id.use-case";
+import { Injector } from "injector";
+import { IAnswer } from "layers/answer.interface";
+import { FindPublicPacksByNameUseCase } from "use-cases/packs/find-public-packs-by-name-use.case";
+import { LoadPackItemsFromPackUseCase } from "use-cases/packs/load-pack-items-from-pack.use-case";
+import { FindPacksByUserIdUseCase } from "use-cases/packs/find-packs-by-user-id.use-case";
 
 export class UsingController {
   constructor(private readonly injector: Injector) {}

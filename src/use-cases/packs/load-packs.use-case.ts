@@ -1,5 +1,5 @@
 import { IPack } from "domain/pack.interface";
-import { Injector } from "../../injector";
+import { Injector } from "injector";
 
 export interface ILoadPacksUseCase {
   loadPacks(): Promise<IPack[]>;

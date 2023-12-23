@@ -13,19 +13,19 @@ import { PackItemRepository } from "./repositories/pack-item.repository";
 import { PackRepository } from "./repositories/pack.repository";
 import { FindPacksByUserIdUseCase } from "./use-cases/packs/find-packs-by-user-id.use-case";
 
-export const createDependencies = (injector: Injector) => {
+export const injectDependencies = (injector: Injector) => {
   const repositoryFactory: IRepositoryFactory = new MemoryRepositoryFactory();
 
-  const userRepository: IRepository<IUser> = repositoryFactory.create("users");
-  const packRepository: IRepository<IPack> = repositoryFactory.create("packs");
-  const packItemRepository: IRepository<IPackItem> =
-    repositoryFactory.create("pack-items");
+  const userRepository = repositoryFactory.create("users");
+  const packRepository = repositoryFactory.create("packs");
+  const packItemRepository = repositoryFactory.create("pack-items");
 
   injector.register(UserRepository, userRepository);
   injector.register(PackRepository, packRepository);
   injector.register(PackItemRepository, packItemRepository);
 
-  const packService = new PackService();
+  const packService = new PackService(injector);
+
   injector.register(FindPublicPacksByNameUseCase, packService);
   injector.register(LoadPacksUseCase, packService);
   injector.register(FindPacksByUserIdUseCase, packService);

@@ -1,13 +1,13 @@
 import { IRepository } from "layers/repository.interface";
 import { IPack } from "domain/pack.interface";
-import { ILoadPacksUseCase } from "../use-cases/packs/load-packs.use-case";
-import { IFindPublicPacksByNameUseCase } from "../use-cases/packs/find-public-packs-by-name-use.case";
-import { injector } from "../index";
-import { PackRepository } from "../repositories/pack.repository";
-import { IFindPacksByUserIdUseCase } from "../use-cases/packs/find-packs-by-user-id.use-case";
-import { ILoadPackItemsFromPackUseCase } from "../use-cases/packs/load-pack-items-from-pack.use-case";
-import { IPackItem } from "../domain/pack-item.interface";
-import { PackItemRepository } from "../repositories/pack-item.repository";
+import { ILoadPacksUseCase } from "use-cases/packs/load-packs.use-case";
+import { IFindPublicPacksByNameUseCase } from "use-cases/packs/find-public-packs-by-name-use.case";
+import { PackRepository } from "repositories/pack.repository";
+import { IFindPacksByUserIdUseCase } from "use-cases/packs/find-packs-by-user-id.use-case";
+import { ILoadPackItemsFromPackUseCase } from "use-cases/packs/load-pack-items-from-pack.use-case";
+import { IPackItem } from "domain/pack-item.interface";
+import { PackItemRepository } from "repositories/pack-item.repository";
+import { Injector } from "injector";
 
 export class PackService
   implements
@@ -16,11 +16,13 @@ export class PackService
     IFindPacksByUserIdUseCase,
     ILoadPackItemsFromPackUseCase
 {
-  private readonly packRepository: IRepository<IPack> =
-    injector.resolve(PackRepository);
+  private readonly packRepository: IRepository<IPack>;
+  private readonly packItemRepository: IRepository<IPackItem>;
 
-  private readonly packItemRepository: IRepository<IPackItem> =
-    injector.resolve(PackItemRepository);
+  constructor(injector: Injector) {
+    this.packRepository = injector.resolve(PackRepository);
+    this.packItemRepository = injector.resolve(PackItemRepository);
+  }
 
   loadPacks(): Promise<IPack[]> {
     return this.packRepository.getAll();

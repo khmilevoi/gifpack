@@ -1,5 +1,5 @@
-import { IPack } from "../../domain/pack.interface";
-import { Injector } from "../../injector";
+import { IPack } from "domain/pack.interface";
+import { Injector } from "injector";
 
 export interface IFindPacksByUserIdUseCase {
   findPacksByUserId(userId: string): Promise<IPack[]>;
