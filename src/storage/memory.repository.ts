@@ -1,7 +1,7 @@
 import { IRepository, IRepositoryFactory } from "layers/repository.interface";
 
 export class MemoryRepositoryFactory implements IRepositoryFactory {
-  create<Entity>() {
+  create<Entity>(): IRepository<Entity> {
     return new MemoryRepository<Entity>();
   }
 }

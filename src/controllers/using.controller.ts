@@ -9,75 +9,87 @@ export class UsingController {
 
   async handleMessage(userId: string, message: string): Promise<IAnswer> {
     if (message.trim() === "") {
-      const userPacks = await this.injector
-        .resolve(FindPacksByUserIdUseCase)
-        .findPacksByUserId(userId);
-
-      if (userPacks.length === 0) {
-        return noItemsAnswer;
-      }
-
-      return {
-        inlineMessages: userPacks.map((pack) => ({
-          type: "text",
-          content: pack.name,
-          id: pack.id,
-        })),
-      };
+      return this.handleEmptyMessage(userId);
     }
 
-    const publicPacks = await this.injector
-      .resolve(FindPublicPacksByNameUseCase)
-      .findPublicPacksByName(message);
+    return this.handleNonEmptyMessage(message);
+  }
 
-    if (publicPacks.length > 1) {
-      return {
-        inlineMessages: publicPacks.map((pack) => ({
-          type: "text",
-          content: pack.name,
-          id: pack.id,
-        })),
-      };
-    }
+  private async handleEmptyMessage(userId: string): Promise<IAnswer> {
+    const { findPacksByUserId } = this.injector.resolve(
+      FindPacksByUserIdUseCase,
+    );
+    const userPacks = await findPacksByUserId(userId);
 
-    if (publicPacks.length === 1) {
-      const [currentPack] = publicPacks;
-
-      const packItems = await this.injector
-        .resolve(LoadPackItemsFromPackUseCase)
-        .loadPackItemsFromPack(currentPack.id);
-
-      if (packItems.length === 0) {
-        return noItemsAnswer;
-      }
-
-      return {
-        inlineMessages: packItems.map((packItem) => ({
-          type: "image",
-          content: packItem.content,
-          id: packItem.id,
-        })),
-      };
+    if (userPacks.length === 0) {
+      return NO_ITEMS_ANSWER;
     }
 
     return {
-      inlineMessages: [
-        {
+      inlineMessages: userPacks.map(({ name, id }) => ({
+        type: "text",
+        content: name,
+        id,
+      })),
+    };
+  }
+
+  private async handleNonEmptyMessage(message: string): Promise<IAnswer> {
+    const { findPublicPacksByName } = this.injector.resolve(
+      FindPublicPacksByNameUseCase,
+    );
+    const publicPacks = await findPublicPacksByName(message);
+
+    if (publicPacks.length === 0) {
+      return NO_PACKS_FOUND_ANSWER;
+    }
+
+    if (publicPacks.length > 1) {
+      return {
+        inlineMessages: publicPacks.map(({ name, id }) => ({
           type: "text",
-          content: "No packs found",
-          id: "no-packs",
-        },
-      ],
+          content: name,
+          id,
+        })),
+      };
+    }
+
+    const [currentPack] = publicPacks;
+    const { loadPackItemsFromPack } = this.injector.resolve(
+      LoadPackItemsFromPackUseCase,
+    );
+    const packItems = await loadPackItemsFromPack(currentPack.id);
+
+    if (packItems.length === 0) {
+      return NO_ITEMS_ANSWER;
+    }
+
+    return {
+      inlineMessages: packItems.map(({ content, id }) => ({
+        type: "image",
+        content,
+        id,
+      })),
     };
   }
 }
 
-const noItemsAnswer: IAnswer = {
+const NO_ITEMS_ANSWER: IAnswer = {
   inlineMessages: [
     {
       type: "text",
       content: "No items in pack",
       id: "no-items",
+    },
+  ],
+};
+
+const NO_PACKS_FOUND_ANSWER: IAnswer = {
+  inlineMessages: [
+    {
+      type: "text",
+      content: "No packs found",
+      id: "no-packs",
     },
   ],
 };
