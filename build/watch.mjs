@@ -1,8 +1,8 @@
 import esbuild from "esbuild";
-import { createBuildSettings } from "./settings.js";
+import { createBuildSettings } from "./settings.mjs";
 
 const settings = createBuildSettings({
-  sourcemap: true,
+  sourcemap: 'inline',
 });
 
 const ctx = await esbuild.context(settings);

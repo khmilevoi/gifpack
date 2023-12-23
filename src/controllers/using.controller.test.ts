@@ -13,27 +13,51 @@ describe("using.controller", () => {
     controller = new UsingController(injector);
 
     injector.register(FindPacksByUserIdUseCase, {
-      findPacksByUserId: () => Promise.resolve([
-        { id: "1", name: "Pack 1", userId: "1", isPublic: true },
-        { id: "2", name: "Pack 2", userId: "1", isPublic: true }
-      ])
+      findPacksByUserId: () =>
+        Promise.resolve([
+          { id: "1", name: "Pack 1", userId: "1", isPublic: true },
+          { id: "2", name: "Pack 2", userId: "1", isPublic: true },
+        ]),
     });
 
-    // Make sure to adjust these mocks to reflect the correct behavior
     injector.register(FindPublicPacksByNameUseCase, {
-      findPublicPacksByName: (name) => Promise.resolve(name ? [{
-        id: "3",
-        name: "Public Pack",
-        userId: "2",
-        isPublic: true
-      }] : [])
+      findPublicPacksByName: (name) =>
+        Promise.resolve(
+          [
+            {
+              id: "3",
+              name: "Public",
+              userId: "2",
+              isPublic: true,
+            },
+            {
+              id: "4",
+              name: "Public Pack 1",
+              userId: "2",
+              isPublic: true,
+            },
+            {
+              id: "5",
+              name: "Public Pack 2",
+              userId: "2",
+              isPublic: true,
+            },
+          ].filter((pack) => pack.name.includes(name)),
+        ),
     });
 
     injector.register(LoadPackItemsFromPackUseCase, {
-      loadPackItemsFromPack: (packId) => Promise.resolve(packId === "3" ? [{
-        id: "item1",
-        content: "Item 1 Content"
-      }] : [])
+      loadPackItemsFromPack: (packId) =>
+        Promise.resolve(
+          packId === "4"
+            ? [
+                {
+                  id: "item1",
+                  content: "Item 1 Content",
+                },
+              ]
+            : [],
+        ),
     });
   });
 
@@ -42,57 +66,87 @@ describe("using.controller", () => {
     expect(result).toEqual({
       inlineMessages: [
         { type: "text", content: "Pack 1", id: "1" },
-        { type: "text", content: "Pack 2", id: "2" }
-      ]
+        { type: "text", content: "Pack 2", id: "2" },
+      ],
     });
   });
 
   it("should handle message leading to multiple public packs", async () => {
-    const result = await controller.handleMessage("1", "Search Query");
+    const result = await controller.handleMessage("1", "Public");
     expect(result).toEqual({
-      "inlineMessages": [
+      inlineMessages: [
         {
-          "content": "Item 1 Content",
-          "id": "item1",
-          "type": "image"
-        }
-      ]
+          content: "Public",
+          id: "3",
+          type: "text",
+        },
+        {
+          content: "Public Pack 1",
+          id: "4",
+          type: "text",
+        },
+        {
+          content: "Public Pack 2",
+          id: "5",
+          type: "text",
+        },
+      ],
     });
   });
 
   it("should handle message leading to a single public pack with no items", async () => {
-    // Adjust the mock to return an empty array for pack items when needed
-    const result = await controller.handleMessage("1", "Single Public Pack");
-    expect(result).toEqual({
-      "inlineMessages": [
-        {
-          "content": "Item 1 Content",
-          "id": "item1",
-          "type": "image"
-        }
-      ]
-    });
-  });
-
-  it("should handle message leading to a single public pack with items", async () => {
-    const result = await controller.handleMessage("1", "Single Item Pack");
+    const result = await controller.handleMessage("1", "Public Pack 1");
     expect(result).toEqual({
       inlineMessages: [
-        { type: "image", content: "Item 1 Content", id: "item1" }
-      ]
+        {
+          content: "Item 1 Content",
+          id: "item1",
+          type: "image",
+        },
+      ],
     });
   });
 
   it("should handle message with no packs found", async () => {
     const result = await controller.handleMessage("1", "No Match");
     expect(result).toEqual({
-      "inlineMessages": [
+      inlineMessages: [
         {
-          "content": "Item 1 Content",
-          "id": "item1",
-          "type": "image"
-        }
-      ]
+          content: "No packs found",
+          id: "no-packs",
+          type: "text",
+        },
+      ],
+    });
+  });
+
+  it("should handle message with no pack items found", async () => {
+    const result = await controller.handleMessage("1", "Public Pack 2");
+    expect(result).toEqual({
+      inlineMessages: [
+        {
+          content: "No items in pack",
+          id: "no-items",
+          type: "text",
+        },
+      ],
+    });
+  });
+
+  it("should return no items answer when user has no packs", async () => {
+    injector.register(FindPacksByUserIdUseCase, {
+      findPacksByUserId: () => Promise.resolve([]),
+    });
+
+    const result = await controller.handleMessage("1", "");
+    expect(result).toEqual({
+      inlineMessages: [
+        {
+          type: "text",
+          content: "No items in pack",
+          id: "no-items",
+        },
+      ],
     });
   });
 });

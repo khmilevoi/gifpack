@@ -1,7 +1,4 @@
-import {
-  IRepository,
-  IRepositoryFactory,
-} from "layers/repository.interface";
+import { IRepository, IRepositoryFactory } from "layers/repository.interface";
 
 export class MemoryRepositoryFactory implements IRepositoryFactory {
   create<Entity>() {
@@ -35,5 +32,25 @@ class MemoryRepository<Entity> implements IRepository<Entity> {
 
   async update(id: string, item: Entity) {
     this.items.set(id, item);
+  }
+
+  async find(search: Partial<Entity>): Promise<Entity[]> {
+    const items = Array.from(this.items.values());
+
+    return items.filter((item) => {
+      for (const key in search) {
+        if (item[key] !== search[key]) {
+          return false;
+        }
+      }
+
+      return true;
+    });
+  }
+
+  async findOne(search: Partial<Entity>): Promise<Entity | null> {
+    const items = this.find(search);
+
+    return items[0] ?? null;
   }
 }

@@ -1,8 +1,15 @@
 {
   "compilerOptions": {
-
+    "sourceMap": true,
     "allowSyntheticDefaultImports": true,
     "baseUrl": "./src",
-    "types": ["node", "jest"],
-  }
+    "types": [
+      "node",
+      "jest"
+    ]
+  },
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
 }

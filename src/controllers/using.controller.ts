@@ -13,6 +13,10 @@ export class UsingController {
         .resolve(FindPacksByUserIdUseCase)
         .findPacksByUserId(userId);
 
+      if (userPacks.length === 0) {
+        return noItemsAnswer;
+      }
+
       return {
         inlineMessages: userPacks.map((pack) => ({
           type: "text",
@@ -44,15 +48,7 @@ export class UsingController {
         .loadPackItemsFromPack(currentPack.id);
 
       if (packItems.length === 0) {
-        return {
-          inlineMessages: [
-            {
-              type: "text",
-              content: "No items in pack",
-              id: "no-items",
-            },
-          ],
-        };
+        return noItemsAnswer;
       }
 
       return {
@@ -75,3 +71,13 @@ export class UsingController {
     };
   }
 }
+
+const noItemsAnswer: IAnswer = {
+  inlineMessages: [
+    {
+      type: "text",
+      content: "No items in pack",
+      id: "no-items",
+    },
+  ],
+};
