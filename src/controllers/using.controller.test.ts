@@ -2,7 +2,7 @@ import { Injector } from "injector";
 import { UsingController } from "./using.controller";
 import { FindPacksByUserIdUseCase } from "use-cases/packs/find-packs-by-user-id.use-case";
 import { FindPublicPacksByNameUseCase } from "use-cases/packs/find-public-packs-by-name-use.case";
-import { LoadPackItemsFromPackUseCase } from "use-cases/packs/load-pack-items-from-pack.use-case";
+import { LoadPackItemsFromPackUseCase } from "use-cases/pack-items/load-pack-items-from-pack.use-case";
 
 describe("using.controller", () => {
   let injector: Injector;

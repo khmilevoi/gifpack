@@ -1,52 +1,22 @@
 import { Injector } from "injector";
 import { IAnswer } from "layers/answer.interface";
 import { FindPublicPacksByNameUseCase } from "use-cases/packs/find-public-packs-by-name-use.case";
-import { LoadPackItemsFromPackUseCase } from "use-cases/packs/load-pack-items-from-pack.use-case";
+import { LoadPackItemsFromPackUseCase } from "use-cases/pack-items/load-pack-items-from-pack.use-case";
 import { FindPacksByUserIdUseCase } from "use-cases/packs/find-packs-by-user-id.use-case";
 
 export class UsingController {
   constructor(private readonly injector: Injector) {}
 
   async handleMessage(userId: string, message: string): Promise<IAnswer> {
-    if (message.trim() === "") {
-      return this.handleEmptyMessage(userId);
-    }
+    const packs = await this.findPacks(userId, message);
 
-    return this.handleNonEmptyMessage(message);
-  }
-
-  private async handleEmptyMessage(userId: string): Promise<IAnswer> {
-    const { findPacksByUserId } = this.injector.resolve(
-      FindPacksByUserIdUseCase,
-    );
-    const userPacks = await findPacksByUserId(userId);
-
-    if (userPacks.length === 0) {
-      return NO_ITEMS_ANSWER;
-    }
-
-    return {
-      inlineMessages: userPacks.map(({ name, id }) => ({
-        type: "text",
-        content: name,
-        id,
-      })),
-    };
-  }
-
-  private async handleNonEmptyMessage(message: string): Promise<IAnswer> {
-    const { findPublicPacksByName } = this.injector.resolve(
-      FindPublicPacksByNameUseCase,
-    );
-    const publicPacks = await findPublicPacksByName(message);
-
-    if (publicPacks.length === 0) {
+    if (packs.length === 0) {
       return NO_PACKS_FOUND_ANSWER;
     }
 
-    if (publicPacks.length > 1) {
+    if (packs.length > 1) {
       return {
-        inlineMessages: publicPacks.map(({ name, id }) => ({
+        inlineMessages: packs.map(({ id, name }) => ({
           type: "text",
           content: name,
           id,
@@ -54,23 +24,54 @@ export class UsingController {
       };
     }
 
-    const [currentPack] = publicPacks;
-    const { loadPackItemsFromPack } = this.injector.resolve(
-      LoadPackItemsFromPackUseCase,
-    );
-    const packItems = await loadPackItemsFromPack(currentPack.id);
+    const pack = packs[0];
+
+    const packItems = await this.injector
+      .resolve(LoadPackItemsFromPackUseCase)
+      .loadPackItemsFromPack(pack.id);
 
     if (packItems.length === 0) {
       return NO_ITEMS_ANSWER;
     }
 
     return {
-      inlineMessages: packItems.map(({ content, id }) => ({
-        type: "image",
-        content,
-        id,
-      })),
+      inlineMessages: packItems.map(({ id, content, type }) => {
+        switch (type) {
+          case "gif": {
+            return {
+              type: "gif",
+              content,
+              id,
+            };
+          }
+          case "image": {
+            return {
+              type: "photo",
+              content,
+              id,
+            };
+          }
+        }
+      }),
     };
+  }
+
+  private async findPacks(userId: string, message: string) {
+    const userPacks = await this.injector
+      .resolve(FindPacksByUserIdUseCase)
+      .findPacksByUserId(userId);
+
+    const filteredPacks = userPacks.filter(({ name }) =>
+      name.startsWith(message.trim()),
+    );
+
+    if (filteredPacks.length > 0) {
+      return filteredPacks;
+    }
+
+    return await this.injector
+      .resolve(FindPublicPacksByNameUseCase)
+      .findPublicPacksByName(message);
   }
 }
 

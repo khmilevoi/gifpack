@@ -4,17 +4,24 @@ import { ILoadPacksUseCase } from "use-cases/packs/load-packs.use-case";
 import { IFindPublicPacksByNameUseCase } from "use-cases/packs/find-public-packs-by-name-use.case";
 import { PackRepository } from "repositories/pack.repository";
 import { IFindPacksByUserIdUseCase } from "use-cases/packs/find-packs-by-user-id.use-case";
-import { ILoadPackItemsFromPackUseCase } from "use-cases/packs/load-pack-items-from-pack.use-case";
+import { ILoadPackItemsFromPackUseCase } from "use-cases/pack-items/load-pack-items-from-pack.use-case";
 import { IPackItem } from "domain/pack-item.interface";
 import { PackItemRepository } from "repositories/pack-item.repository";
 import { Injector } from "injector";
+import {
+  IAddPackCommand,
+  IAddPackUseCase,
+} from "use-cases/packs/add-pack.use-case";
+import { IFindPackByIdUseCase } from "use-cases/packs/find-pack-by-id.use-case";
 
 export class PackService
   implements
     ILoadPacksUseCase,
     IFindPublicPacksByNameUseCase,
     IFindPacksByUserIdUseCase,
-    ILoadPackItemsFromPackUseCase
+    ILoadPackItemsFromPackUseCase,
+    IAddPackUseCase,
+    IFindPackByIdUseCase
 {
   private readonly packRepository: IRepository<IPack>;
   private readonly packItemRepository: IRepository<IPackItem>;
@@ -44,5 +51,18 @@ export class PackService
 
   loadPackItemsFromPack(packId: string): Promise<IPackItem[]> {
     return this.packItemRepository.find({ packId });
+  }
+
+  async addPack(pack: IAddPackCommand): Promise<IPack> {
+    return await this.packRepository.add(pack.name, {
+      name: pack.name,
+      userId: pack.userId,
+      isPublic: false,
+      id: pack.name,
+    });
+  }
+
+  findPackById(id: string): Promise<IPack | null> {
+    return this.packRepository.get(id);
   }
 }

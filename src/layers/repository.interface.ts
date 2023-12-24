@@ -5,6 +5,12 @@ export interface IRepositoryFactory {
 export interface IRepository<Entity> {
   add(id: string, item: Entity): Promise<Entity>;
 
+  addMany(items: Entity[], idField: keyof Entity): Promise<Entity[]>;
+
+  addOrUpdate(id: string, item: Entity): Promise<Entity>;
+
+  addOrUpdateMany(items: Entity[], idField: keyof Entity): Promise<Entity[]>;
+
   remove(id: string): Promise<void>;
 
   get(id: string): Promise<Entity | null>;
@@ -15,5 +21,9 @@ export interface IRepository<Entity> {
 
   findOne(search: Partial<Entity>): Promise<Entity | null>;
 
-  update(id: string, item: Entity): Promise<void>;
+  update(id: string, item: Entity): Promise<Entity>;
+
+  patch(id: string, item: Partial<Entity>): Promise<Entity>;
+
+  has(id: string): Promise<boolean>;
 }

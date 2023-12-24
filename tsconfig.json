@@ -2,8 +2,12 @@
   "compilerOptions": {
     "sourceMap": true,
     "allowSyntheticDefaultImports": true,
+    "strictNullChecks": true,
     "baseUrl": "./src",
-    "types": ["node", "jest"]
+    "types": ["node", "jest"],
+    "noImplicitAny": true,
+    "skipLibCheck": true,
+    "strict": true
   },
   "exclude": ["node_modules", "dist"]
 }

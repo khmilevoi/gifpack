@@ -1,16 +1,9 @@
 export type IState = {
+  stage: "add-item:pack" | "add-item:images" | "create-pack:name";
   id: string;
-  userId: string;
-} & (
-  | {
-      stage: "image";
-      images: IImage[];
-    }
-  | {
-      stage: "pack-name";
-      images: IImage[];
-    }
-);
+  images: IImage[];
+  packId: string | null;
+};
 
 export type IImage = {
   type: "image" | "gif";
