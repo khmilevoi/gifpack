@@ -12,7 +12,7 @@
     "test:coverage": "jest --coverage",
     "test": "jest",
     "format": "prettier --write .",
-    "precommit": "npm run format && git add ."
+    "precommit": "tsc && npm run format && git add ."
   },
   "author": "",
   "license": "ISC",

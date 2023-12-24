@@ -85,7 +85,7 @@ bot.on("message", async (message) => {
   }
 
   if (message.text === "/done") {
-    await handleAnswer(chatId, await rootController.handleDone(chatId, userId));
+    await handleAnswer(chatId, await rootController.handleDone(chatId));
 
     return;
   }
